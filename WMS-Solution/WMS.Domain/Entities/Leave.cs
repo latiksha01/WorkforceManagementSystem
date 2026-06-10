@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
 
 namespace WMS.Domain.Entities
 {
@@ -36,8 +38,10 @@ namespace WMS.Domain.Entities
         public DateTime? ApprovedOn { get; set; }
 
         // Navigation Properties
+        [ForeignKey(nameof(EmployeeId))]
         public Employee? Employee { get; set; }
 
+        [ForeignKey(nameof(ApprovedBy))]
         public Employee? ApprovedByEmployee { get; set; }
     }
 }
