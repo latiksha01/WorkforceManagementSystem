@@ -10,4 +10,10 @@
     <ProjectReference Include="..\WMS.Domain\WMS.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="SeedData\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
