@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WMS.Application.DTOs.Department;
 using WMS.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WMS.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentController : ControllerBase
