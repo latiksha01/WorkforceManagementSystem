@@ -11,10 +11,16 @@ namespace WMS.Application.Interfaces
 
         Task<ClientDto?> GetClientByIdAsync(int id);
 
-        Task<ClientDto> CreateClientAsync(CreateClientDto dto);
+        Task<ClientDto> CreateClientAsync(
+    CreateClientDto dto,
+    int performedBy);
 
-        Task<bool> UpdateClientAsync(UpdateClientDto dto);
+        Task<bool> UpdateClientAsync(
+            UpdateClientDto dto,
+            int performedBy);
 
-        Task<bool> DeleteClientAsync(int id);
+        Task<bool> DeleteClientAsync(
+            int id,
+            int performedBy);
     }
 }

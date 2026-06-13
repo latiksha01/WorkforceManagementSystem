@@ -16,5 +16,7 @@ namespace WMS.Application.Interfaces
         Task<bool> UpdateAuditLogAsync(UpdateAuditLogDto dto);
 
         Task<bool> DeleteAuditLogAsync(int id);
+
+        Task LogAsync( string entityName, int recordId, string action, int createdBy);
     }
 }

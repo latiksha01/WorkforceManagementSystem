@@ -100,5 +100,21 @@ namespace WMS.Application.Services
 
             return true;
         }
+        public async Task LogAsync(
+            string entityName,
+            int recordId,
+            string action,
+            int createdBy)
+        {
+            var log = new AuditLog
+            {
+                EntityName = entityName,
+                RecordId = recordId,
+                Action = action,
+                CreatedBy = createdBy
+            };
+
+            await _auditLogRepository.CreateAsync(log);
+        }
     }
 }

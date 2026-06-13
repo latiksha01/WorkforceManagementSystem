@@ -1,0 +1,48 @@
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Client' : 'Add Client' }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Client Name</mat-label>
+      <mat-icon matPrefix>business</mat-icon>
+      <input matInput formControlName="clientName" placeholder="e.g. Acme Corporation">
+      <mat-error *ngIf="form.get('clientName')?.hasError('required')">Client name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address (optional)</mat-label>
+      <mat-icon matPrefix>location_on</mat-icon>
+      <textarea matInput formControlName="clientAddress" rows="2" placeholder="Street address"></textarea>
+    </mat-form-field>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Location (City)</mat-label>
+        <mat-icon matPrefix>place</mat-icon>
+        <input matInput formControlName="clientLocation" placeholder="e.g. New York">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <mat-icon matPrefix>phone</mat-icon>
+        <input matInput type="number" formControlName="clientPhoneNumber" placeholder="e.g. 9876543210">
+      </mat-form-field>
+    </div>
+
+    <div class="status-row">
+      <span class="status-label">Status</span>
+      <mat-slide-toggle formControlName="status" color="primary">
+        {{ form.get('status')?.value ? 'Active' : 'Inactive' }}
+      </mat-slide-toggle>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>

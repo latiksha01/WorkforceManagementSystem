@@ -11,10 +11,12 @@ namespace WMS.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IAuditLogService _auditLogService;
 
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        public EmployeeService( IEmployeeRepository employeeRepository, IAuditLogService auditLogService)
         {
             _employeeRepository = employeeRepository;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
@@ -66,7 +68,9 @@ namespace WMS.Application.Services
             };
         }
 
-        public async Task<EmployeeDto> CreateEmployeeAsync(CreateEmployeeDto dto)
+        public async Task<EmployeeDto> CreateEmployeeAsync(
+    CreateEmployeeDto dto,
+    int performedBy)
         {
             var employee = new Employee
             {
@@ -83,6 +87,14 @@ namespace WMS.Application.Services
             };
 
             var createdEmployee = await _employeeRepository.CreateAsync(employee);
+
+            await _auditLogService.LogAsync(
+            "Employee",
+            createdEmployee.EmployeeId,
+            "Create",
+            performedBy
+        );
+
 
             return await GetEmployeeByIdAsync(createdEmployee.EmployeeId)
                    ?? throw new Exception("Employee creation failed.");
@@ -107,6 +119,12 @@ namespace WMS.Application.Services
             employee.Status = dto.Status;
 
             await _employeeRepository.UpdateAsync(employee);
+            await _auditLogService.LogAsync(
+                "Employee",
+                employee.EmployeeId,
+                "Update",
+                employee.EmployeeId
+            );
 
             return true;
         }
@@ -119,6 +137,12 @@ namespace WMS.Application.Services
                 return false;
 
             await _employeeRepository.DeleteAsync(employee);
+            await _auditLogService.LogAsync(
+            "Employee",
+            employee.EmployeeId,
+            "Delete",
+            employee.EmployeeId
+        );
 
             return true;
         }

@@ -1,0 +1,5 @@
+.id-chip{background:#f1f5f9;color:#64748b;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px}
+.name-cell{display:flex;align-items:center;gap:8px}
+.avatar{width:28px;height:28px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gray{background:linear-gradient(135deg,#64748b,#94a3b8)}
+.filter-field{width:160px}

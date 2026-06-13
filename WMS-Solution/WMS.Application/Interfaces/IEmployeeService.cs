@@ -11,7 +11,7 @@ namespace WMS.Application.Interfaces
 
         Task<EmployeeDto?> GetEmployeeByIdAsync(int id);
 
-        Task<EmployeeDto> CreateEmployeeAsync(CreateEmployeeDto createEmployeeDto);
+        Task<EmployeeDto> CreateEmployeeAsync(CreateEmployeeDto dto,int performedBy);
 
         Task<bool> UpdateEmployeeAsync(UpdateEmployeeDto updateEmployeeDto);
 

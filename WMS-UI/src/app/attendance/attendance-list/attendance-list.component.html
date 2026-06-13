@@ -1,0 +1,85 @@
+<div class="page-header">
+  <h2>Attendance</h2>
+  <div class="header-actions">
+    <button mat-stroked-button color="primary" (click)="checkIn()">
+      <mat-icon>login</mat-icon> Check In
+    </button>
+    <button mat-stroked-button color="warn" (click)="checkOut()">
+      <mat-icon>logout</mat-icon> Check Out
+    </button>
+    <button mat-raised-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon> Add Record
+    </button>
+  </div>
+</div>
+
+<div class="table-container">
+  <div class="table-toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search by employee</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Type to search...">
+    </mat-form-field>
+    <span class="record-count">{{ dataSource.filteredData.length }} record(s)</span>
+  </div>
+
+  <div *ngIf="loading" class="loading-overlay"><mat-spinner diameter="40"></mat-spinner></div>
+
+  <table mat-table [dataSource]="dataSource" matSort *ngIf="!loading">
+    <ng-container matColumnDef="attendanceId">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let a"><span class="id-chip">{{ a.attendanceId }}</span></td>
+    </ng-container>
+    <ng-container matColumnDef="employeeName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+      <td mat-cell *matCellDef="let a">
+        <div class="name-cell">
+          <div class="avatar blue">{{ a.employeeName.charAt(0) }}</div>
+          <strong>{{ a.employeeName }}</strong>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="attendanceDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+      <td mat-cell *matCellDef="let a">{{ a.attendanceDate | date:'mediumDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="checkIn">
+      <th mat-header-cell *matHeaderCellDef>Check In</th>
+      <td mat-cell *matCellDef="let a">{{ a.checkIn | date:'shortTime' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="checkOut">
+      <th mat-header-cell *matHeaderCellDef>Check Out</th>
+      <td mat-cell *matCellDef="let a">{{ a.checkOut ? (a.checkOut | date:'shortTime') : '—' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="totalHours">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
+      <td mat-cell *matCellDef="let a">{{ a.totalHours != null ? a.totalHours + ' hrs' : '—' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="workMode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Work Mode</th>
+      <td mat-cell *matCellDef="let a">
+        <span class="badge"
+          [class.badge-blue]="a.workMode === 'Onsite'"
+          [class.badge-purple]="a.workMode === 'Remote'"
+          [class.badge-yellow]="a.workMode === 'Hybrid'">
+          {{ a.workMode || '—' }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let a">
+        <div class="action-icons">
+          <button mat-icon-button color="primary" (click)="openDialog(a)" matTooltip="Edit"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="delete(a)" matTooltip="Delete"><mat-icon>delete_outline</mat-icon></button>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="cols"></tr>
+    <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td [attr.colspan]="cols.length"><div class="empty-state"><mat-icon>event_available</mat-icon><p>No attendance records found</p></div></td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+</div>

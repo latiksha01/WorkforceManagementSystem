@@ -1,0 +1,107 @@
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Employee' : 'Add Employee' }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input matInput formControlName="firstName" placeholder="John">
+        <mat-error *ngIf="form.get('firstName')?.hasError('required')">First name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <mat-icon matPrefix>person_outline</mat-icon>
+        <input matInput formControlName="lastName" placeholder="Doe">
+        <mat-error *ngIf="form.get('lastName')?.hasError('required')">Last name is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <mat-icon matPrefix>email</mat-icon>
+        <input matInput formControlName="email" placeholder="john.doe@company.com">
+        <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <mat-icon matPrefix>phone</mat-icon>
+        <input matInput formControlName="phoneNumber" placeholder="9876543210">
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Gender</mat-label>
+        <mat-icon matPrefix>wc</mat-icon>
+        <mat-select formControlName="gender">
+          <mat-option value="M">Male</mat-option>
+<mat-option value="F">Female</mat-option>
+<mat-option value="O">Other</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date of Birth</mat-label>
+        <mat-icon matPrefix>cake</mat-icon>
+        <input matInput [matDatepicker]="dobPicker" formControlName="dob">
+        <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+        <mat-datepicker #dobPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Date of Joining</mat-label>
+        <mat-icon matPrefix>work_history</mat-icon>
+        <input matInput [matDatepicker]="dojPicker" formControlName="doj">
+        <mat-datepicker-toggle matSuffix [for]="dojPicker"></mat-datepicker-toggle>
+        <mat-datepicker #dojPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-icon matPrefix>toggle_on</mat-icon>
+        <mat-select formControlName="status">
+          <mat-option value="Active">Active</mat-option>
+          <mat-option value="Inactive">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <mat-icon matPrefix>corporate_fare</mat-icon>
+        <mat-select formControlName="departmentId">
+          <mat-option *ngFor="let d of departments" [value]="d.departmentId">{{ d.departmentName }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('departmentId')?.hasError('required')">Department is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Role</mat-label>
+        <mat-icon matPrefix>badge</mat-icon>
+        <mat-select formControlName="roleId">
+          <mat-option *ngFor="let r of roles" [value]="r.roleId">{{ r.roleName }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('roleId')?.hasError('required')">Role is required</mat-error>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>

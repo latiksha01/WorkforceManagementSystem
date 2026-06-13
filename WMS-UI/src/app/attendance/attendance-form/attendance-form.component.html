@@ -1,0 +1,61 @@
+<div class="dialog-header">
+  <h2>{{ title }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Employee</mat-label>
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-select formControlName="employeeId">
+        <mat-option *ngFor="let e of employees" [value]="e.employeeId">{{ e.firstName }} {{ e.lastName }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('employeeId')?.hasError('required')">Employee is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Attendance Date</mat-label>
+      <mat-icon matPrefix>event</mat-icon>
+      <input matInput [matDatepicker]="datePicker" formControlName="attendanceDate">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Check In Time</mat-label>
+        <mat-icon matPrefix>login</mat-icon>
+        <input matInput type="time" formControlName="checkInTime">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Check Out Time</mat-label>
+        <mat-icon matPrefix>logout</mat-icon>
+        <input matInput type="time" formControlName="checkOutTime">
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Total Hours</mat-label>
+        <mat-icon matPrefix>schedule</mat-icon>
+        <input matInput type="number" formControlName="totalHours" placeholder="e.g. 8">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Work Mode</mat-label>
+        <mat-icon matPrefix>home_work</mat-icon>
+        <mat-select formControlName="workMode">
+          <mat-option value="Onsite">Onsite</mat-option>
+          <mat-option value="Remote">Remote</mat-option>
+          <mat-option value="Hybrid">Hybrid</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">Save</span>
+  </button>
+</mat-dialog-actions>

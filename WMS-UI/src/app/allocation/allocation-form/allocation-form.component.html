@@ -1,0 +1,48 @@
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Allocation' : 'Assign Employee to Project' }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Employee</mat-label>
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-select formControlName="employeeId">
+        <mat-option *ngFor="let e of employees" [value]="e.employeeId">{{ e.firstName }} {{ e.lastName }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('employeeId')?.hasError('required')">Employee is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Project</mat-label>
+      <mat-icon matPrefix>work</mat-icon>
+      <mat-select formControlName="projectId">
+        <mat-option *ngFor="let p of projects" [value]="p.projectId">{{ p.projectName }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('projectId')?.hasError('required')">Project is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Assigned On</mat-label>
+      <mat-icon matPrefix>event</mat-icon>
+      <input matInput [matDatepicker]="assignedPicker" formControlName="assignedOn">
+      <mat-datepicker-toggle matSuffix [for]="assignedPicker"></mat-datepicker-toggle>
+      <mat-datepicker #assignedPicker></mat-datepicker>
+      <mat-error *ngIf="form.get('assignedOn')?.hasError('required')">Assignment date is required</mat-error>
+    </mat-form-field>
+
+    <div class="status-row" *ngIf="isEdit">
+      <span class="status-label">Status</span>
+      <mat-slide-toggle formControlName="status" color="primary">
+        {{ form.get('status')?.value ? 'Active' : 'Removed' }}
+      </mat-slide-toggle>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Assign' }}</span>
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,52 @@
+<div class="navbar">
+
+  <!-- Left: app label -->
+  <div class="navbar-left">
+    <span class="page-title">Workforce Management System</span>
+  </div>
+
+  <!-- Right: user section -->
+  <div class="navbar-right">
+
+    <!-- Notification bell (decorative) -->
+    <button mat-icon-button class="icon-btn" matTooltip="Notifications">
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- User avatar + menu -->
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-btn">
+      <div class="user-avatar">{{ getInitial() }}</div>
+      <div class="user-info">
+        <span class="user-name">{{ username }}</span>
+        <span class="user-role">{{ role }}</span>
+      </div>
+      <mat-icon class="chevron">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu" class="user-menu" xPosition="before">
+      <div class="menu-header">
+        <div class="menu-avatar">{{ getInitial() }}</div>
+        <div>
+          <div class="menu-name">{{ username }}</div>
+          <div class="menu-role">{{ role }}</div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+
+<button mat-menu-item (click)="changePassword()">
+  <mat-icon>lock_reset</mat-icon>
+  <span>Change Password</span>
+</button>
+
+<button mat-menu-item (click)="logout()">
+  <mat-icon color="warn">logout</mat-icon>
+  <span>Sign Out</span>
+</button>
+    </mat-menu>
+
+  </div>
+
+</div>

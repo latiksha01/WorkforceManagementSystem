@@ -1,0 +1,85 @@
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Leave Request' : 'Apply for Leave' }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Leave Type</mat-label>
+      <mat-icon matPrefix>category</mat-icon>
+      <mat-select formControlName="leaveType">
+        <mat-option value="Sick">Sick Leave</mat-option>
+        <mat-option value="Casual">Casual Leave</mat-option>
+        <mat-option value="Earned">Earned Leave</mat-option>
+        <mat-option value="Unpaid">Unpaid Leave</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('leaveType')?.hasError('required')">Leave type is required</mat-error>
+    </mat-form-field>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>From Date</mat-label>
+        <mat-icon matPrefix>event</mat-icon>
+        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+        <mat-error *ngIf="form.get('fromDate')?.hasError('required')">From date is required</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>To Date</mat-label>
+        <mat-icon matPrefix>event_busy</mat-icon>
+        <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+        <mat-error *ngIf="form.get('toDate')?.hasError('required')">To date is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Admin & Manager -->
+<mat-form-field
+  appearance="outline"
+  class="full-width"
+  *ngIf="role !== 'Employee'">
+
+  <mat-label>Employee</mat-label>
+
+  <mat-icon matPrefix>person</mat-icon>
+
+  <mat-select formControlName="employeeId">
+
+    <mat-option
+      *ngFor="let e of employees"
+      [value]="e.employeeId">
+
+      {{ e.firstName }} {{ e.lastName }}
+
+    </mat-option>
+
+  </mat-select>
+
+</mat-form-field>
+
+<!-- Employee -->
+<mat-form-field
+  appearance="outline"
+  class="full-width"
+  *ngIf="role === 'Employee'">
+
+  <mat-label>Employee</mat-label>
+
+  <input
+    matInput
+    [value]="employeeName"
+    readonly>
+
+</mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Submit' }}</span>
+  </button>
+</mat-dialog-actions>

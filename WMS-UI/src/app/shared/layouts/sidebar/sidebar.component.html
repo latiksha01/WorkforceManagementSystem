@@ -1,0 +1,73 @@
+<div class="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-icon-wrap">
+      <mat-icon>apartment</mat-icon>
+    </div>
+
+    <div class="logo-text">
+      <span class="logo-main">WMS</span>
+      <span class="logo-sub">Workforce Suite</span>
+    </div>
+  </div>
+
+  <!-- Temporary Role Display -->
+  <div style="padding:10px;color:white;">
+    Role: {{ role }}
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- MAIN -->
+    <div class="nav-section-label">MAIN</div>
+
+    <a *ngFor="let item of mainItems"
+       [routerLink]="item.route"
+       routerLinkActive="active"
+       class="nav-link">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span>{{ item.label }}</span>
+    </a>
+
+    <!-- MANAGEMENT -->
+    <ng-container *ngIf="role === 'Admin' || role === 'Manager'">
+
+      <div class="nav-section-label">
+        MANAGEMENT
+      </div>
+
+      <a *ngFor="let item of managerItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         class="nav-link">
+
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+
+      </a>
+
+    </ng-container>
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="role === 'Admin'">
+
+      <div class="nav-section-label">
+        ADMIN
+      </div>
+
+      <a *ngFor="let item of adminItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         class="nav-link">
+
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+
+      </a>
+
+    </ng-container>
+
+  </nav>
+
+</div>

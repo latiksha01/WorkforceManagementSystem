@@ -16,5 +16,7 @@ namespace WMS.Domain.Interfaces
         Task UpdateAsync(AuditLog auditLog);
 
         Task DeleteAsync(AuditLog auditLog);
+
+
     }
 }

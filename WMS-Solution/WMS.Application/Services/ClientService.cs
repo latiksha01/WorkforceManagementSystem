@@ -11,10 +11,14 @@ namespace WMS.Application.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IAuditLogService _auditLogService;
 
-        public ClientService(IClientRepository clientRepository)
+        public ClientService(
+            IClientRepository clientRepository,
+            IAuditLogService auditLogService)
         {
             _clientRepository = clientRepository;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<ClientDto>> GetAllClientsAsync()
@@ -52,7 +56,7 @@ namespace WMS.Application.Services
             };
         }
 
-        public async Task<ClientDto> CreateClientAsync(CreateClientDto dto)
+        public async Task<ClientDto> CreateClientAsync(CreateClientDto dto,int performedBy)
         {
             var client = new Client
             {
@@ -64,6 +68,7 @@ namespace WMS.Application.Services
             };
 
             var createdClient = await _clientRepository.CreateAsync(client);
+            await _auditLogService.LogAsync("Client",createdClient.ClientId,"Create",performedBy);
 
             return new ClientDto
             {
@@ -77,7 +82,7 @@ namespace WMS.Application.Services
             };
         }
 
-        public async Task<bool> UpdateClientAsync(UpdateClientDto dto)
+        public async Task<bool> UpdateClientAsync(UpdateClientDto dto,int performedBy)
         {
             var client = await _clientRepository.GetByIdAsync(dto.ClientId);
 
@@ -91,11 +96,12 @@ namespace WMS.Application.Services
             client.Status = dto.Status;
 
             await _clientRepository.UpdateAsync(client);
+            await _auditLogService.LogAsync("Client", client.ClientId,"Update",performedBy);
 
             return true;
         }
 
-        public async Task<bool> DeleteClientAsync(int id)
+        public async Task<bool> DeleteClientAsync(int id,int performedBy)
         {
             var client = await _clientRepository.GetByIdAsync(id);
 
@@ -103,6 +109,7 @@ namespace WMS.Application.Services
                 return false;
 
             await _clientRepository.DeleteAsync(client);
+            await _auditLogService.LogAsync("Client",client.ClientId,"Delete",performedBy);
 
             return true;
         }

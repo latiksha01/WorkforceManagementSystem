@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WMS.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
@@ -67,6 +67,24 @@ namespace WMS.API.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok("Role Controller Working");
+        }
+
+        [Authorize]
+        [HttpGet("whoami")]
+        public IActionResult WhoAmI()
+        {
+            return Ok(User.Claims.Select(c => new
+            {
+                c.Type,
+                c.Value
+            }));
         }
     }
 }

@@ -11,10 +11,14 @@ namespace WMS.Application.Services
     public class LeaveService : ILeaveService
     {
         private readonly ILeaveRepository _leaveRepository;
+        private readonly IAuditLogService _auditLogService;
 
-        public LeaveService(ILeaveRepository leaveRepository)
+        public LeaveService(
+            ILeaveRepository leaveRepository,
+            IAuditLogService auditLogService)
         {
             _leaveRepository = leaveRepository;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<LeaveDto>> GetAllLeavesAsync()
@@ -85,6 +89,12 @@ namespace WMS.Application.Services
             };
 
             var created = await _leaveRepository.CreateAsync(leave);
+            await _auditLogService.LogAsync(
+                "Leave",
+                created.LeaveId,
+                "Apply",
+                created.EmployeeId
+            );
 
             return await GetLeaveByIdAsync(created.LeaveId)
                 ?? throw new Exception("Leave creation failed.");
@@ -107,6 +117,25 @@ namespace WMS.Application.Services
             leave.ApprovedOn = dto.ApprovedOn;
 
             await _leaveRepository.UpdateAsync(leave);
+            if (dto.Status == "Approved")
+            {
+                await _auditLogService.LogAsync(
+                    "Leave",
+                    leave.LeaveId,
+                    "Approve",
+                    dto.ApprovedBy ?? 0
+                );
+            }
+
+            if (dto.Status == "Rejected")
+            {
+                await _auditLogService.LogAsync(
+                    "Leave",
+                    leave.LeaveId,
+                    "Reject",
+                    dto.ApprovedBy ?? 0
+                );
+            }
 
             return true;
         }

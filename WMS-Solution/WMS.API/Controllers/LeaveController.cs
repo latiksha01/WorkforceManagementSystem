@@ -20,7 +20,21 @@ namespace WMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _leaveService.GetAllLeavesAsync());
+            var allLeaves = await _leaveService.GetAllLeavesAsync();
+
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                return Ok(allLeaves);
+            }
+
+            var employeeIdClaim = User.FindFirst("EmployeeId")?.Value;
+            if (employeeIdClaim == null || !int.TryParse(employeeIdClaim, out int employeeId))
+            {
+                return Forbid();
+            }
+
+            var ownLeaves = allLeaves.Where(l => l.EmployeeId == employeeId);
+            return Ok(ownLeaves);
         }
 
         [HttpGet("{id}")]
@@ -48,6 +62,16 @@ namespace WMS.API.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateLeaveDto dto)
         {
+            var employeeId =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            if (dto.Status == "Approved" ||
+                dto.Status == "Rejected")
+            {
+                dto.ApprovedBy = employeeId;
+                dto.ApprovedOn = DateTime.UtcNow;
+            }
+
             var result = await _leaveService.UpdateLeaveAsync(dto);
 
             if (!result)

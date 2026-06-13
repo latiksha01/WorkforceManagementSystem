@@ -11,10 +11,14 @@ namespace WMS.Application.Services
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly IAuditLogService _auditLogService;
 
-        public ProjectService(IProjectRepository projectRepository)
+        public ProjectService(
+            IProjectRepository projectRepository,
+            IAuditLogService auditLogService)
         {
             _projectRepository = projectRepository;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
@@ -54,7 +58,9 @@ namespace WMS.Application.Services
             };
         }
 
-        public async Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto)
+        public async Task<ProjectDto> CreateProjectAsync(
+    CreateProjectDto dto,
+    int performedBy)
         {
             var project = new Project
             {
@@ -67,11 +73,21 @@ namespace WMS.Application.Services
 
             var createdProject = await _projectRepository.CreateAsync(project);
 
+            await _auditLogService.LogAsync(
+    "Project",
+    createdProject.ProjectId,
+    "Create",
+    performedBy
+);
+
             return await GetProjectByIdAsync(createdProject.ProjectId)
                 ?? throw new Exception("Project creation failed.");
         }
 
-        public async Task<bool> UpdateProjectAsync(UpdateProjectDto dto)
+        public async Task<bool> UpdateProjectAsync(
+    UpdateProjectDto dto,
+    int performedBy)
+        
         {
             var project = await _projectRepository.GetByIdAsync(dto.ProjectId);
 
@@ -85,11 +101,20 @@ namespace WMS.Application.Services
             project.Status = dto.Status;
 
             await _projectRepository.UpdateAsync(project);
+            await _auditLogService.LogAsync(
+    "Project",
+    project.ProjectId,
+    "Update",
+    performedBy
+);
+
 
             return true;
         }
 
-        public async Task<bool> DeleteProjectAsync(int id)
+        public async Task<bool> DeleteProjectAsync(
+    int id,
+    int performedBy)
         {
             var project = await _projectRepository.GetByIdAsync(id);
 
@@ -97,6 +122,12 @@ namespace WMS.Application.Services
                 return false;
 
             await _projectRepository.DeleteAsync(project);
+            await _auditLogService.LogAsync(
+    "Project",
+    project.ProjectId,
+    "Delete",
+    performedBy
+);
 
             return true;
         }

@@ -1,0 +1,266 @@
+<div class="dashboard">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <h2>Dashboard</h2>
+        <p class="dash-sub">Good {{ greeting }}, <strong>{{ username }}</strong>! Here's today's overview.</p>
+      </div>
+      <div class="dash-date">
+        <mat-icon>calendar_today</mat-icon>
+        {{ today | date:'fullDate' }}
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid" *ngIf="!isEmployee">
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg,#2563eb,#60a5fa)">
+          <mat-icon>people_alt</mat-icon>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value">{{ stats.employees }}</div>
+          <div class="stat-label">Total Employees</div>
+        </div>
+        <div class="stat-trend up">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg,#059669,#34d399)">
+          <mat-icon>corporate_fare</mat-icon>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value">{{ stats.departments }}</div>
+          <div class="stat-label">Departments</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg,#7c3aed,#a78bfa)">
+          <mat-icon>work</mat-icon>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value">{{ stats.projects }}</div>
+          <div class="stat-label">Active Projects</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg,#d97706,#fbbf24)">
+          <mat-icon>business</mat-icon>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value">{{ stats.clients }}</div>
+          <div class="stat-label">Clients</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg,#dc2626,#f87171)">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value">{{ stats.pendingLeaves }}</div>
+          <div class="stat-label">Pending Leaves</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Employee Dashboard -->
+<div *ngIf="isEmployee" class="wms-card" style="margin-bottom:20px;">
+
+  <div class="card-header">
+    <mat-icon class="card-icon-header">person</mat-icon>
+    <h3>Employee Portal</h3>
+  </div>
+
+  <p>
+    Welcome <strong>{{ username }}</strong>.
+  </p>
+
+  <p>
+    You can view your attendance, leaves, projects and announcements from the menu.
+  </p>
+
+  <div style="margin-top:15px;">
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/leave">
+
+      <mat-icon>beach_access</mat-icon>
+      Apply Leave
+
+    </button>
+  </div>
+
+</div>
+
+<div *ngIf="isEmployee" style="display:flex; gap:20px; margin-bottom:20px;">
+
+  <!-- My Projects -->
+  <div class="wms-card" style="flex:1;">
+    <div class="card-header">
+      <mat-icon class="card-icon-header">work</mat-icon>
+      <h3>My Projects</h3>
+    </div>
+
+    <div *ngIf="myProjects.length === 0">
+      No project assigned.
+    </div>
+
+    <div *ngFor="let p of myProjects">
+      <p><strong>{{ p.projectName }}</strong></p>
+    </div>
+  </div>
+
+  <!-- Attendance -->
+  <div class="wms-card" style="flex:1;">
+    <div class="card-header">
+      <mat-icon class="card-icon-header">event_available</mat-icon>
+      <h3>My Attendance</h3>
+    </div>
+
+    <p *ngIf="myAttendance">
+      ✅ Present
+    </p>
+
+    <p *ngIf="!myAttendance">
+      ❌ No attendance record found
+    </p>
+  </div>
+
+  <!-- Leave Status -->
+  <div class="wms-card" style="flex:1;">
+    <div class="card-header">
+      <mat-icon class="card-icon-header">beach_access</mat-icon>
+      <h3>My Leave Status</h3>
+    </div>
+
+    <p>Approved : {{ myLeaveStats.approved }}</p>
+    <p>Pending : {{ myLeaveStats.pending }}</p>
+    <p>Rejected : {{ myLeaveStats.rejected }}</p>
+  </div>
+
+</div>
+    <!-- SECOND ROW -->
+    <div class="second-row">
+
+      <!-- Leave Stats -->
+      <div class="wms-card leave-card" *ngIf="!isEmployee">
+        <div class="card-header">
+          <mat-icon class="card-icon-header">beach_access</mat-icon>
+          <h3>Leave Overview</h3>
+        </div>
+
+        <div class="leave-bars">
+          <div class="leave-bar-item">
+            <div class="lbi-top">
+              <span class="lbi-label">Approved</span>
+              <span class="lbi-num badge badge-green">{{ leaveStats.approved }}</span>
+            </div>
+            <div class="lbi-track">
+              <div class="lbi-fill" style="background:#22c55e"
+                [style.width.%]="getPercent(leaveStats.approved)"></div>
+            </div>
+          </div>
+          <div class="leave-bar-item">
+            <div class="lbi-top">
+              <span class="lbi-label">Pending</span>
+              <span class="lbi-num badge badge-yellow">{{ leaveStats.pending }}</span>
+            </div>
+            <div class="lbi-track">
+              <div class="lbi-fill" style="background:#f59e0b"
+                [style.width.%]="getPercent(leaveStats.pending)"></div>
+            </div>
+          </div>
+          <div class="leave-bar-item">
+            <div class="lbi-top">
+              <span class="lbi-label">Rejected</span>
+              <span class="lbi-num badge badge-red">{{ leaveStats.rejected }}</span>
+            </div>
+            <div class="lbi-track">
+              <div class="lbi-fill" style="background:#ef4444"
+                [style.width.%]="getPercent(leaveStats.rejected)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leave-total">
+          Total: <strong>{{ leaveStats.approved + leaveStats.pending + leaveStats.rejected }}</strong> requests
+        </div>
+      </div>
+
+      <!-- Recent Announcements -->
+      <div class="wms-card announce-card">
+        <div class="card-header">
+          <mat-icon class="card-icon-header">campaign</mat-icon>
+          <h3>Announcements</h3>
+          <span class="badge badge-blue" style="margin-left:auto">{{ announcements.length }}</span>
+        </div>
+
+        <div *ngIf="announcements.length === 0" class="empty-state">
+          <mat-icon>campaign</mat-icon>
+          <p>No announcements</p>
+        </div>
+
+        <div class="announce-list">
+          <div *ngFor="let ann of announcements" class="announce-item">
+            <div class="announce-dot" [style.background]="ann.isActive ? '#22c55e' : '#94a3b8'"></div>
+            <div class="announce-body">
+              <div class="announce-title">{{ ann.title }}</div>
+              <div class="announce-meta">{{ ann.createdByName }} · {{ ann.createdOn | date:'MMM d' }}</div>
+            </div>
+            <span class="badge" [class.badge-green]="ann.isActive" [class.badge-gray]="!ann.isActive">
+              {{ ann.isActive ? 'Live' : 'Off' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Projects -->
+      <div class="wms-card projects-card" *ngIf="!isEmployee">
+        <div class="card-header">
+          <mat-icon class="card-icon-header">work</mat-icon>
+          <h3>Recent Projects</h3>
+        </div>
+
+        <div *ngIf="recentProjects.length === 0" class="empty-state">
+          <mat-icon>work</mat-icon>
+          <p>No projects yet</p>
+        </div>
+
+        <div class="project-list">
+          <div *ngFor="let p of recentProjects" class="project-item">
+            <div class="project-left">
+              <div class="project-initial">{{ p.projectName.charAt(0) }}</div>
+              <div>
+                <div class="project-name">{{ p.projectName }}</div>
+                <div class="project-client">{{ p.clientName || 'Internal' }}</div>
+              </div>
+            </div>
+            <span class="badge"
+              [class.badge-green]="p.status === 'Active'"
+              [class.badge-gray]="p.status === 'Completed'"
+              [class.badge-yellow]="p.status === 'OnHold'">
+              {{ p.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>

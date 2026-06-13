@@ -37,7 +37,14 @@ namespace WMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateClient(CreateClientDto dto)
         {
-            var client = await _clientService.CreateClientAsync(dto);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var client =
+                await _clientService.CreateClientAsync(
+                    dto,
+                    performedBy
+                );
 
             return CreatedAtAction(
                 nameof(GetClientById),
@@ -48,7 +55,14 @@ namespace WMS.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateClient(UpdateClientDto dto)
         {
-            var result = await _clientService.UpdateClientAsync(dto);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var result =
+                await _clientService.UpdateClientAsync(
+                    dto,
+                    performedBy
+                );
 
             if (!result)
                 return NotFound();
@@ -59,7 +73,14 @@ namespace WMS.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(int id)
         {
-            var result = await _clientService.DeleteClientAsync(id);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var result =
+                await _clientService.DeleteClientAsync(
+                    id,
+                    performedBy
+                );
 
             if (!result)
                 return NotFound();

@@ -1,0 +1,35 @@
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Announcement' : 'New Announcement' }}</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <mat-icon matPrefix>title</mat-icon>
+      <input matInput formControlName="title" placeholder="e.g. Holiday Notice">
+      <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Message</mat-label>
+      <mat-icon matPrefix>notes</mat-icon>
+      <textarea matInput formControlName="message" rows="4" placeholder="Write your announcement here..."></textarea>
+      <mat-error *ngIf="form.get('message')?.hasError('required')">Message is required</mat-error>
+    </mat-form-field>
+
+    <div class="status-row">
+      <span class="status-label">Visibility</span>
+      <mat-slide-toggle formControlName="isActive" color="primary">
+        {{ form.get('isActive')?.value ? 'Active (visible to all)' : 'Inactive (hidden)' }}
+      </mat-slide-toggle>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Publish' }}</span>
+  </button>
+</mat-dialog-actions>

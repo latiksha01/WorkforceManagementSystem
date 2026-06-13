@@ -38,7 +38,14 @@ namespace WMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEmployee(CreateEmployeeDto dto)
         {
-            var employee = await _employeeService.CreateEmployeeAsync(dto);
+            var performedBy = int.Parse(
+                User.FindFirst("EmployeeId")!.Value
+            );
+
+            var employee = await _employeeService.CreateEmployeeAsync(
+                dto,
+                performedBy
+            );
 
             return CreatedAtAction(
                 nameof(GetEmployeeById),

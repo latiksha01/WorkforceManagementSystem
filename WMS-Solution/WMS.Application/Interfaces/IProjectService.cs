@@ -11,10 +11,16 @@ namespace WMS.Application.Interfaces
 
         Task<ProjectDto?> GetProjectByIdAsync(int id);
 
-        Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto);
+        Task<ProjectDto> CreateProjectAsync(
+    CreateProjectDto dto,
+    int performedBy);
 
-        Task<bool> UpdateProjectAsync(UpdateProjectDto dto);
+        Task<bool> UpdateProjectAsync(
+            UpdateProjectDto dto,
+            int performedBy);
 
-        Task<bool> DeleteProjectAsync(int id);
+        Task<bool> DeleteProjectAsync(
+            int id,
+            int performedBy);
     }
 }

@@ -20,7 +20,23 @@ namespace WMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _attendanceService.GetAllAttendancesAsync());
+            var allAttendance = await _attendanceService.GetAllAttendancesAsync();
+
+            // Admin (and Manager) can see everyone's attendance
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                return Ok(allAttendance);
+            }
+
+            // Employee can only see their own attendance
+            var employeeIdClaim = User.FindFirst("EmployeeId")?.Value;
+            if (employeeIdClaim == null || !int.TryParse(employeeIdClaim, out int employeeId))
+            {
+                return Forbid(); // logged in, but has no linked employee record
+            }
+
+            var ownAttendance = allAttendance.Where(a => a.EmployeeId == employeeId);
+            return Ok(ownAttendance);
         }
 
         [HttpGet("{id}")]

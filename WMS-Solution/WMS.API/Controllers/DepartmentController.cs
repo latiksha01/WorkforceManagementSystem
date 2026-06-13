@@ -18,6 +18,7 @@ namespace WMS.API.Controllers
         }
 
         // GET: api/Department
+        //[AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments()
         {

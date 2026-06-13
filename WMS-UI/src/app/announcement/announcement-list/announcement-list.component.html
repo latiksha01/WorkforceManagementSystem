@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h2>Announcements</h2>
+  <button mat-raised-button color="primary" (click)="openDialog()">
+    <mat-icon>add</mat-icon> New Announcement
+  </button>
+</div>
+
+<div *ngIf="loading" class="loading-overlay"><mat-spinner diameter="40"></mat-spinner></div>
+
+<div *ngIf="!loading" class="announcement-grid">
+  <div *ngIf="announcements.length === 0" class="empty-state full-width">
+    <mat-icon>campaign</mat-icon>
+    <p>No announcements yet</p>
+  </div>
+
+  <div *ngFor="let a of announcements" class="announcement-card">
+    <div class="ann-card-header">
+      <div class="ann-icon" [class.inactive]="!a.isActive">
+        <mat-icon>campaign</mat-icon>
+      </div>
+      <div class="ann-card-title">
+        <h3>{{ a.title }}</h3>
+        <span class="ann-meta">By {{ a.createdByName }} · {{ a.createdOn | date:'mediumDate' }}</span>
+      </div>
+      <span class="badge" [class.badge-green]="a.isActive" [class.badge-gray]="!a.isActive">
+        {{ a.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+    <p class="ann-message">{{ a.message }}</p>
+    <div class="ann-card-actions">
+      <button mat-icon-button color="primary" (click)="openDialog(a)" matTooltip="Edit"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button color="warn" (click)="delete(a)" matTooltip="Delete"><mat-icon>delete_outline</mat-icon></button>
+    </div>
+  </div>
+</div>

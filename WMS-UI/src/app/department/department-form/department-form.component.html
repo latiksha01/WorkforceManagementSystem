@@ -1,0 +1,45 @@
+<!-- Dialog Header -->
+<div class="dialog-header">
+  <h2>{{ isEdit ? 'Edit Department' : 'Add Department' }}</h2>
+  <button mat-icon-button (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <!-- Department Name -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Department Name</mat-label>
+      <mat-icon matPrefix>corporate_fare</mat-icon>
+      <input matInput formControlName="departmentName" placeholder="e.g. Engineering">
+      <mat-error *ngIf="form.get('departmentName')?.hasError('required')">
+        Department name is required
+      </mat-error>
+      <mat-error *ngIf="form.get('departmentName')?.hasError('maxlength')">
+        Max 100 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description (optional)</mat-label>
+      <mat-icon matPrefix>notes</mat-icon>
+      <textarea matInput formControlName="description"
+        placeholder="Brief description of this department"
+        rows="3">
+      </textarea>
+      <mat-hint align="end">{{ form.get('description')?.value?.length || 0 }}/255</mat-hint>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="saving">
+    <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+    <span *ngIf="!saving">{{ isEdit ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>

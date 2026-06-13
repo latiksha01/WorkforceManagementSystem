@@ -1,0 +1,106 @@
+.navbar {
+  height: 62px;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.navbar-left .page-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  color: #64748b !important;
+  width: 38px !important;
+  height: 38px !important;
+}
+.icon-btn mat-icon { font-size: 22px; }
+
+.divider {
+  width: 1px;
+  height: 28px;
+  background: #e2e8f0;
+  margin: 0 4px;
+}
+
+.user-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px !important;
+  border-radius: 10px !important;
+  height: auto !important;
+  min-width: unset !important;
+  line-height: 1 !important;
+}
+
+.user-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.2;
+}
+.user-role {
+  font-size: 11px;
+  color: #64748b;
+}
+.chevron {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #94a3b8 !important;
+}
+
+/* Menu */
+.menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.menu-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu-name { font-size: 14px; font-weight: 600; color: #0f172a; }
+.menu-role { font-size: 12px; color: #64748b; }

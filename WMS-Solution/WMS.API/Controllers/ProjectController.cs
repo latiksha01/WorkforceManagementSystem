@@ -37,7 +37,14 @@ namespace WMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProject(CreateProjectDto dto)
         {
-            var project = await _projectService.CreateProjectAsync(dto);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var project =
+                await _projectService.CreateProjectAsync(
+                    dto,
+                    performedBy
+                );
 
             return CreatedAtAction(
                 nameof(GetProjectById),
@@ -48,7 +55,14 @@ namespace WMS.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProject(UpdateProjectDto dto)
         {
-            var result = await _projectService.UpdateProjectAsync(dto);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var result =
+                await _projectService.UpdateProjectAsync(
+                    dto,
+                    performedBy
+                );
 
             if (!result)
                 return NotFound();
@@ -59,7 +73,14 @@ namespace WMS.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var result = await _projectService.DeleteProjectAsync(id);
+            var performedBy =
+                int.Parse(User.FindFirst("EmployeeId")!.Value);
+
+            var result =
+                await _projectService.DeleteProjectAsync(
+                    id,
+                    performedBy
+                );
 
             if (!result)
                 return NotFound();

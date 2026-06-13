@@ -1,0 +1,4 @@
+.full-width{width:100%;margin-bottom:4px}
+mat-dialog-content{padding-top:8px !important}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:12px 4px;margin-top:4px}
+.status-label{font-size:13px;font-weight:500;color:#475569}

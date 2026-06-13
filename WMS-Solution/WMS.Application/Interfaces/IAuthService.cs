@@ -9,5 +9,12 @@ namespace WMS.Application.Interfaces
     public interface IAuthService
     {
         Task<LoginResponseDto?> LoginAsync(LoginRequestDto dto);
+        Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto);
+
+        Task LogAsync(
+            string entityName,
+            int recordId,
+            string action,
+            int createdBy);
     }
 }

@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
 
+using System.Security.Claims;
+using WMS.API.Middleware;
 using WMS.Application.Interfaces;
 using WMS.Application.Services;
 using WMS.Domain.Interfaces;
 using WMS.Infrastructure.Data;
 using WMS.Infrastructure.Repositories;
-using WMS.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,18 +41,49 @@ builder.Services
                 IssuerSigningKey =
                     new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            builder.Configuration["Jwt:Key"]!))
+                            builder.Configuration["Jwt:Key"]!)),
+
+                ClockSkew = TimeSpan.Zero
             };
     });
 
+// Authorization Policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly",
+        policy => policy.RequireRole("Admin"));
+
+    options.AddPolicy("ManagerAndAbove",
+        policy => policy.RequireRole("Admin", "Manager"));
+
+    options.AddPolicy("AllRoles",
+        policy => policy.RequireRole("Admin", "Manager", "Employee"));
+});
+
+
 // Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = "WMS API",
+            Version = "v1"
+        });
 
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token (without the 'Bearer ' prefix — Swagger adds it automatically)."
+    });
 
-
-// All Dependency Injection
-
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 // Department
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -95,17 +128,29 @@ builder.Services.AddScoped<IUserLoginService, UserLoginService>();
 // Authentication
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-//Audit Log
+// Audit Log
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
+// Exception Middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
 // HTTP Pipeline
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -113,6 +158,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();

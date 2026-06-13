@@ -1,0 +1,63 @@
+<div class="page-header">
+  <h2>Project Allocations</h2>
+  <button mat-raised-button color="primary" (click)="openDialog()">
+    <mat-icon>add</mat-icon> Assign Employee
+  </button>
+</div>
+<div class="table-container">
+  <div class="table-toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search allocations</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Type to search...">
+    </mat-form-field>
+    <span class="record-count">{{ dataSource.filteredData.length }} record(s)</span>
+  </div>
+  <div *ngIf="loading" class="loading-overlay"><mat-spinner diameter="40"></mat-spinner></div>
+  <table mat-table [dataSource]="dataSource" matSort *ngIf="!loading">
+    <ng-container matColumnDef="allocationId">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let a"><span class="id-chip">{{ a.allocationId }}</span></td>
+    </ng-container>
+    <ng-container matColumnDef="employeeName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
+      <td mat-cell *matCellDef="let a">
+        <div class="name-cell">
+          <div class="avatar blue">{{ a.employeeName.charAt(0) }}</div>
+          <strong>{{ a.employeeName }}</strong>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="projectName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
+      <td mat-cell *matCellDef="let a"><span class="badge badge-purple">{{ a.projectName }}</span></td>
+    </ng-container>
+    <ng-container matColumnDef="assignedOn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Assigned On</th>
+      <td mat-cell *matCellDef="let a">{{ a.assignedOn | date:'mediumDate' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+      <td mat-cell *matCellDef="let a">
+        <span class="badge" [class.badge-green]="a.status" [class.badge-gray]="!a.status">
+          {{ a.status ? 'Active' : 'Removed' }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let a">
+        <div class="action-icons">
+          <button mat-icon-button color="primary" (click)="openDialog(a)" matTooltip="Edit"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="delete(a)" matTooltip="Remove"><mat-icon>delete_outline</mat-icon></button>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="cols"></tr>
+    <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td [attr.colspan]="cols.length"><div class="empty-state"><mat-icon>assignment_ind</mat-icon><p>No allocations found</p></div></td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+</div>
